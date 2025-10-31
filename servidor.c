@@ -136,7 +136,10 @@ void *client_thread(void *arg) {
             char *saveptr = NULL;
             char *nonce_s = strtok_r(line+2, ";", &saveptr);
             char *hash_s = strtok_r(NULL, ";", &saveptr);
-            char *full_s = strtok_r(NULL, "", &saveptr);
+
+            // Reconstruir la cadena completa con el mensaje base
+            char mensaje_completo[BUF];
+            snprintf(mensaje_completo, sizeof(mensaje_completo), "%s%s", state.base, nonce_s);
 
             pthread_mutex_lock(&state.mtx);
             state.found_flag = 1;
@@ -145,7 +148,7 @@ void *client_thread(void *arg) {
             printf("\n=== Resultado recibido ===\n");
             printf("nonce = %s\n", nonce_s);
             printf("hash  = %s\n", hash_s);
-            printf("cadena= %s\n", full_s);
+            printf("cadena= %s\n", mensaje_completo);
             printf("==========================\n");
 
             broadcast_stop();
